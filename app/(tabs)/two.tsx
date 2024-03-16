@@ -2,8 +2,16 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import {useQuranService} from "@/services/QuranService";
+
+
 
 export default function TabTwoScreen() {
+  //sample usage of the quran service
+/*  const quran = useQuranService();
+  let res = quran.getQuran().surah(1).ayah(2).fetch()
+ */
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab Two</Text>
