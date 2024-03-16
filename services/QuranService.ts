@@ -1,12 +1,39 @@
 import {TSurah} from "@/types/surah";
-import {BASE_URL} from "@/constants/Api";
+import {BASE_URL, QURAN_PARAMS} from "@/constants/Api";
 
-export class QuranService {
+class QuranChainer {
+    private selectedSurah : number | null;
+    private selectedAyah : number | null;
     constructor() {
-
+        this.selectedSurah = null;
+        this.selectedAyah = null;
     }
-    getQuran() {
-        return fetch(BASE_URL + 'quran/en.asad')
+
+    surah(surahNumber : number) {
+        this.selectedSurah = surahNumber;
+        return this;
+    }
+
+    ayah(ayahNumber : number) {
+        if (this.selectedSurah === null) {
+            throw new Error('Call surah() method first');
+        }
+        this.selectedAyah = ayahNumber;
+        // Do whatever you want with selectedSurah and selectedAyah
+        console.log(`Selected Surah: ${this.selectedSurah}, Selected Ayah: ${this.selectedAyah}`);
+        return this;
+    }
+    async fetch() {
+        if (this.selectedSurah === null) {
+            throw new Error('Call surah() method first');
+        }
+        if (this.selectedAyah === null) {
+            throw new Error('Call ayah() method first');
+        }
+        // Do whatever you want with selectedSurah and selectedAyah
+        console.log(`Selected Surah: ${this.selectedSurah}, Selected Ayah: ${this.selectedAyah}`);
+        return fetch(BASE_URL + '/quran/verses/uthmani?' + QURAN_PARAMS.CHAPTER +'='+this.selectedSurah
+            + '&' + QURAN_PARAMS.VERSE + '=' + this.selectedAyah)
             .then(response => response.json())
             .then(data => {
                 return data;
@@ -14,10 +41,22 @@ export class QuranService {
             .catch(error => {
                 console.log('Error:', error);
             });
+
+
+    }
+}
+
+export class QuranService {
+    constructor() {
+
     }
 
-    getQuranBySurah(surah : TSurah) {
-        return fetch(BASE_URL + surah.name + '/en.asad')
+    getQuran() {
+        return new QuranChainer()
+    }
+
+    getQuranBySurah(surahNum :number) {
+        return fetch(BASE_URL + '/quran/verses/uthmani?' + QURAN_PARAMS.CHAPTER +'='+surahNum)
             .then(response => response.json())
             .then(data => {
                 return data;
